@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -7,72 +6,63 @@ import {
 } from "@/components/ui/navigation-menu";
 import {
   Popover,
-  PopoverContent,
   PopoverTrigger,
+  PopoverContent,
 } from "@/components/ui/popover";
-
+import { Button } from "@/components/ui/button";
 import { ReceiptIndianRupee } from "lucide-react";
+import { HashLink } from "react-router-hash-link";
+import { Link } from "react-router-dom";
 
-// Navigation links array to be used in both desktop and mobile menus
-const navigationLinks = [
-  { href: "#", label: "Home", active: true },
-  { href: "#", label: "Features" },
-  { href: "#", label: "Reviews" },
-  { href: "#", label: "Pricing" },
+const routes = [
+  { to: "/#home", label: "Home" },
+  { to: "/#features", label: "Features" },
+  { to: "/#reviews", label: "Reviews" },
+  { to: "/#pricing", label: "Pricing" },
 ];
 
-export default function Component() {
+export default function Nav() {
   return (
-    <header className="border-b px-4 md:px-6">
-      <div className="flex h-16 items-center justify-between gap-4">
-        {/* Left side */}
+    <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-6">
         <div className="flex items-center gap-2">
-          {/* Mobile menu trigger */}
           <Popover>
             <PopoverTrigger asChild>
               <Button
-                className="group size-8 md:hidden"
                 variant="ghost"
                 size="icon"
+                className="group size-8 md:hidden"
               >
                 <svg
-                  className="pointer-events-none"
-                  width={16}
-                  height={16}
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  // xmlns="http://www.w3.org/2000/svg"
+                  className="pointer-events-none"
                 >
-                  <path
-                    d="M4 12L20 12"
-                    className="origin-center -translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-x-0 group-aria-expanded:translate-y-0 group-aria-expanded:rotate-[315deg]"
-                  />
-                  <path
-                    d="M4 12H20"
-                    className="origin-center transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.8)] group-aria-expanded:rotate-45"
-                  />
-                  <path
-                    d="M4 12H20"
-                    className="origin-center translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-y-0 group-aria-expanded:rotate-[135deg]"
-                  />
+                  <path d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" className="w-36 p-1 md:hidden">
+
+            {/* Mobile nav */}
+            <PopoverContent align="start" className="w-40 p-1 md:hidden">
               <NavigationMenu className="max-w-none *:w-full">
-                <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
-                  {navigationLinks.map((link, index) => (
-                    <NavigationMenuItem key={index} className="w-full">
-                      <NavigationMenuLink
-                        href={link.href}
-                        className="py-1.5"
-                        active={link.active}
-                      >
-                        {link.label}
+                <NavigationMenuList className="flex-col gap-0">
+                  {routes.map((r) => (
+                    <NavigationMenuItem key={r.to} className="w-full">
+                      <NavigationMenuLink asChild>
+                        <HashLink
+                          smooth
+                          to={r.to}
+                          className="block w-full rounded-md px-3 py-2 hover:bg-accent"
+                        >
+                          {r.label}
+                        </HashLink>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                   ))}
@@ -80,44 +70,38 @@ export default function Component() {
               </NavigationMenu>
             </PopoverContent>
           </Popover>
-          {/* Main nav */}
-          <div className="flex items-center gap-6">
-            {/* Brand logo */}
-            <a href="/" className="flex items-center gap-2">
-              <ReceiptIndianRupee
-                className="text-primary"
-                size={25}
-                aria-hidden="true"
-              />
-              <span className="text-xl font-semibold text-foreground">
-                ReceiptPro
-              </span>
-            </a>
-            {/* Navigation menu */}
-            <NavigationMenu className="max-md:hidden ">
-              <NavigationMenuList className="gap-2">
-                {navigationLinks.map((link, index) => (
-                  <NavigationMenuItem key={index}>
-                    <NavigationMenuLink
-                      active={link.active}
-                      href={link.href}
-                      className="text-muted-foreground hover:text-primary py-1.5 font-medium"
+
+          <HashLink smooth to="/#home" className="flex items-center gap-2">
+            <ReceiptIndianRupee className="text-primary" size={24} />
+            <span className="text-lg font-semibold">ReceiptPro</span>
+          </HashLink>
+
+          {/* Desktop nav */}
+          <NavigationMenu className="hidden md:block">
+            <NavigationMenuList className="gap-4">
+              {routes.map((r) => (
+                <NavigationMenuItem key={r.to}>
+                  <NavigationMenuLink asChild>
+                    <HashLink
+                      smooth
+                      to={r.to}
+                      className="text-muted-foreground hover:text-primary font-medium"
                     >
-                      {link.label}
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu>
-          </div>
+                      {r.label}
+                    </HashLink>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
         </div>
-        {/* Right side */}
-        <div className="flex items-center gap-2">
-          <Button asChild variant="ghost" size="sm" className="text-sm">
-            <a href="/login">Sign In</a>
+
+        <div className="flex gap-2">
+          <Button asChild variant="ghost" size="sm">
+            <Link to="/login">Sign In</Link>
           </Button>
-          <Button asChild size="sm" className="text-sm">
-            <a href="/signup">Get Started</a>
+          <Button asChild size="sm">
+            <Link to="/signup">Get Started</Link>
           </Button>
         </div>
       </div>

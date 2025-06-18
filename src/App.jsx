@@ -3,15 +3,16 @@ import AppLayout from "@/layouts/AppLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
-import Header from "./components/Header";
-import Landingpage from "./Pages/Landingpage";
+import LandingPage from "@/pages/LandingPage";
+// import Dashboard from "@/pages/Dashboard"; // include your dashboard page
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const router = createBrowserRouter([
   {
     element: <AppLayout />,
     children: [
-      { path: "/", element: <Landingpage /> },
+      { path: "/", element: <LandingPage /> },
+      // { path: "/dashboard", element: <Dashboard /> },
 
       {
         element: <AuthLayout />,
@@ -24,8 +25,6 @@ const router = createBrowserRouter([
   },
 ]);
 
-const App = () => {
+export default function App() {
   return <RouterProvider router={router} />;
-};
-
-export default App;
+}

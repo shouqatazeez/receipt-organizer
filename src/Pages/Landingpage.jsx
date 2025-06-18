@@ -1,22 +1,32 @@
-import FeatureSectionSimple from "@/Landing/Features";
-import SimpleFooter from "@/Landing/Footer";
-import Hero from "@/Landing/Hero";
 import Nav from "@/Landing/Nav";
-import PricingSectionCards from "@/Landing/Pricing";
+import Hero from "@/Landing/Hero";
+import FeatureSectionSimple from "@/Landing/Features";
 import Testimonials from "@/Landing/Reviews";
-import React from "react";
+import PricingSectionCards from "@/Landing/Pricing";
+import SimpleFooter from "@/Landing/Footer";
 
-const Landingpage = () => {
+export default function LandingPage() {
   return (
-    <div>
+    <>
       <Nav />
-      <Hero />
-      <FeatureSectionSimple />
-      <Testimonials />
-      <PricingSectionCards />
-      <SimpleFooter />
-    </div>
-  );
-};
 
-export default Landingpage;
+      <section id="home" className="scroll-mt-[80px]">
+        <Hero />
+      </section>
+
+      <section id="features" className="scroll-mt-[80px]">
+        <FeatureSectionSimple />
+      </section>
+
+      <section id="reviews" className="scroll-mt-[80px]">
+        <Testimonials />
+      </section>
+
+      <section id="pricing" className="scroll-mt-[80px]">
+        <PricingSectionCards />
+      </section>
+
+      <SimpleFooter />
+    </>
+  );
+}
