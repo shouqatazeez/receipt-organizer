@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import supabase from "@/lib/supabase";
+// import supabase from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -108,7 +110,11 @@ function SignupForm({ className, ...props }) {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button
+                type="submit"
+                className="w-full cursor-pointer"
+                disabled={loading}
+              >
                 {loading ? "Creating account…" : "Sign up"}
               </Button>
 
