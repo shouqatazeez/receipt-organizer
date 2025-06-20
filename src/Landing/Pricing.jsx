@@ -509,11 +509,8 @@ export default function PricingSectionCards() {
               </Table>
             </section>
           </div>
-          {/* End xs to lg */}
         </div>
-        {/* End Comparison table */}
       </div>
-      {/* End Pricing */}
     </>
   );
 }

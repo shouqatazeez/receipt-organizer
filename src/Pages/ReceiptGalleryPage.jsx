@@ -93,6 +93,15 @@ export default function ReceiptGalleryPage() {
     }
   };
 
+  const handleDelete = async (id, fileUrl) => {
+    if (!confirm("Are you sure you want to delete this receipt?")) return;
+    const path = fileUrl.split("/storage/v1/object/public/receipts/")[1];
+    await supabase.storage.from("receipts").remove([path]);
+    await supabase.from("receipts").delete().eq("id", id);
+    setShowModal(false);
+    fetchReceipts();
+  };
+
   const filteredReceipts = receipts
     .filter((r) => {
       const query = searchQuery.toLowerCase();
@@ -128,20 +137,19 @@ export default function ReceiptGalleryPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Header */}
       <header className="sticky top-0 z-40 border-b bg-white shadow-sm px-4 py-3">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-xl font-bold">
             <ReceiptIndianRupeeIcon className="text-primary" />
             <span>ReceiptPro</span>
           </Link>
-
           <button
             className="md:hidden cursor-pointer"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
-
           <nav className="hidden md:flex gap-6 text-sm font-medium">
             <Link to="/dashboard" className="hover:text-primary">
               Dashboard
@@ -153,7 +161,6 @@ export default function ReceiptGalleryPage() {
               Gallery
             </Link>
           </nav>
-
           <div className="relative hidden md:block">
             <button
               onClick={() => setShowUserMenu((prev) => !prev)}
@@ -168,7 +175,6 @@ export default function ReceiptGalleryPage() {
                 {userEmail}
               </span>
             </button>
-
             {showUserMenu && (
               <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg border text-sm overflow-hidden z-50">
                 <Link
@@ -188,26 +194,17 @@ export default function ReceiptGalleryPage() {
             )}
           </div>
         </div>
-
         {menuOpen && (
           <div className="flex flex-col gap-2 mt-3 md:hidden text-sm font-medium">
-            <Link
-              to="/dashboard"
-              className="hover:text-primary"
-              onClick={() => setMenuOpen(false)}
-            >
+            <Link to="/dashboard" onClick={() => setMenuOpen(false)}>
               Dashboard
             </Link>
-            <Link
-              to="/upload"
-              className="hover:text-primary"
-              onClick={() => setMenuOpen(false)}
-            >
+            <Link to="/upload" onClick={() => setMenuOpen(false)}>
               Upload
             </Link>
             <Link
               to="/gallery"
-              className="hover:text-primary text-primary"
+              className="text-primary"
               onClick={() => setMenuOpen(false)}
             >
               Gallery
@@ -240,64 +237,43 @@ export default function ReceiptGalleryPage() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div>
-            <label className="text-sm font-medium block mb-1">
-              From (Start Date)
-            </label>
-            <input
-              type="date"
-              value={filters.startDate}
-              onChange={(e) =>
-                setFilters((f) => ({ ...f, startDate: e.target.value }))
-              }
-              className="w-full border px-2 py-1 rounded"
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium block mb-1">
-              To (End Date)
-            </label>
-            <input
-              type="date"
-              value={filters.endDate}
-              onChange={(e) =>
-                setFilters((f) => ({ ...f, endDate: e.target.value }))
-              }
-              className="w-full border px-2 py-1 rounded"
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium block mb-1">
-              Min Amount (₹)
-            </label>
-            <input
-              type="number"
-              placeholder="0"
-              value={filters.minAmount}
-              onChange={(e) =>
-                setFilters((f) => ({ ...f, minAmount: e.target.value }))
-              }
-              className="w-full border px-2 py-1 rounded"
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium block mb-1">
-              Max Amount (₹)
-            </label>
-            <input
-              type="number"
-              placeholder="9999"
-              value={filters.maxAmount}
-              onChange={(e) =>
-                setFilters((f) => ({ ...f, maxAmount: e.target.value }))
-              }
-              className="w-full border px-2 py-1 rounded"
-            />
-          </div>
+          <input
+            type="date"
+            value={filters.startDate}
+            onChange={(e) =>
+              setFilters((f) => ({ ...f, startDate: e.target.value }))
+            }
+            className="w-full border px-2 py-1 rounded"
+          />
+          <input
+            type="date"
+            value={filters.endDate}
+            onChange={(e) =>
+              setFilters((f) => ({ ...f, endDate: e.target.value }))
+            }
+            className="w-full border px-2 py-1 rounded"
+          />
+          <input
+            type="number"
+            placeholder="Min Amount"
+            value={filters.minAmount}
+            onChange={(e) =>
+              setFilters((f) => ({ ...f, minAmount: e.target.value }))
+            }
+            className="w-full border px-2 py-1 rounded"
+          />
+          <input
+            type="number"
+            placeholder="Max Amount"
+            value={filters.maxAmount}
+            onChange={(e) =>
+              setFilters((f) => ({ ...f, maxAmount: e.target.value }))
+            }
+            className="w-full border px-2 py-1 rounded"
+          />
         </div>
 
         <div className="mb-6">
-          <label className="text-sm font-medium block mb-1">Sort By</label>
           <select
             className="w-full border px-2 py-1 rounded"
             value={filters.sortBy}
@@ -312,6 +288,7 @@ export default function ReceiptGalleryPage() {
           </select>
         </div>
 
+        {/* Gallery */}
         {loading ? (
           <p className="text-center">Loading receipts...</p>
         ) : filteredReceipts.length === 0 ? (
@@ -358,7 +335,7 @@ export default function ReceiptGalleryPage() {
 
       {showModal && selectedReceipt && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
-          <div className="bg-white max-w-md w-full p-6 rounded shadow-lg">
+          <div className="bg-white max-w-md w-full p-6 rounded shadow-lg overflow-y-auto max-h-[90vh]">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Edit Receipt</h2>
               <button onClick={() => setShowModal(false)}>
@@ -366,6 +343,13 @@ export default function ReceiptGalleryPage() {
               </button>
             </div>
             <div className="space-y-3">
+              {selectedReceipt.file_url && (
+                <img
+                  src={selectedReceipt.file_url}
+                  alt="Preview"
+                  className="w-full h-64 object-contain rounded border"
+                />
+              )}
               <input
                 className="w-full border rounded px-3 py-2"
                 placeholder="Merchant Name"
@@ -394,7 +378,10 @@ export default function ReceiptGalleryPage() {
                 placeholder="Amount"
                 value={selectedReceipt.amount || ""}
                 onChange={(e) =>
-                  setSelectedReceipt((p) => ({ ...p, amount: e.target.value }))
+                  setSelectedReceipt((p) => ({
+                    ...p,
+                    amount: e.target.value,
+                  }))
                 }
               />
               <textarea
@@ -402,7 +389,10 @@ export default function ReceiptGalleryPage() {
                 placeholder="Notes"
                 value={selectedReceipt.notes || ""}
                 onChange={(e) =>
-                  setSelectedReceipt((p) => ({ ...p, notes: e.target.value }))
+                  setSelectedReceipt((p) => ({
+                    ...p,
+                    notes: e.target.value,
+                  }))
                 }
               />
               <input

@@ -227,7 +227,6 @@ export default function ReceiptUploadPage() {
         )}
       </header>
 
-      {/* Upload Form */}
       <div className="p-4 max-w-md mx-auto space-y-4">
         <h1 className="text-2xl font-bold mt-4">Upload Receipt</h1>
 
