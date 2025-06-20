@@ -10,6 +10,7 @@ export default function ReceiptUploadPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [userEmail, setUserEmail] = useState("Loading...");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const [formData, setFormData] = useState({
     merchant_name: "",
@@ -41,6 +42,7 @@ export default function ReceiptUploadPage() {
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
+    setSuccessMessage("");
 
     if (selectedFile) {
       if (selectedFile.type.startsWith("image/")) {
@@ -55,15 +57,22 @@ export default function ReceiptUploadPage() {
 
   const handleFormChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setSuccessMessage("");
   };
 
   const handleUpload = async () => {
     if (!file) return alert("Please select a file first!");
+    if (!formData.merchant_name || !formData.amount) {
+      alert("Merchant name and amount are required.");
+      return;
+    }
+
     setLoading(true);
 
     const {
       data: { user },
     } = await supabase.auth.getUser();
+
     const userId = user?.id;
     if (!userId) {
       alert("Not logged in.");
@@ -90,7 +99,7 @@ export default function ReceiptUploadPage() {
       user_id: userId,
       file_url: publicUrl,
       merchant_name: formData.merchant_name,
-      amount: parseFloat(formData.amount),
+      amount: formData.amount ? parseFloat(formData.amount) : 0,
       date: formData.date,
       category: formData.category,
       tags: formData.tags,
@@ -100,7 +109,7 @@ export default function ReceiptUploadPage() {
     if (insertError) {
       alert("Error saving metadata: " + insertError.message);
     } else {
-      alert("✅ Receipt uploaded successfully!");
+      setSuccessMessage("✅ Receipt uploaded successfully!");
       setFile(null);
       setPreviewUrl(null);
       setFormData({
@@ -123,6 +132,7 @@ export default function ReceiptUploadPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Navbar */}
       <header className="sticky top-0 z-40 border-b bg-white shadow-sm px-4 py-3">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-xl font-bold">
@@ -130,12 +140,13 @@ export default function ReceiptUploadPage() {
             <span>ReceiptPro</span>
           </Link>
 
-          {/*  Hamburger for Mobile */}
-          <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+          <button
+            className="md:hidden cursor-pointer"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
 
-          {/*  Navigation Links for Desktop */}
           <nav className="hidden md:flex gap-6 text-sm font-medium">
             <Link to="/dashboard" className="hover:text-primary">
               Dashboard
@@ -148,11 +159,10 @@ export default function ReceiptUploadPage() {
             </Link>
           </nav>
 
-          {/*  User Avatar & Dropdown */}
           <div className="relative hidden md:block">
             <button
               onClick={() => setShowUserMenu((prev) => !prev)}
-              className="flex items-center gap-2 bg-muted px-3 py-1.5 rounded-full"
+              className="flex items-center gap-2 bg-muted px-3 py-1.5 rounded-full cursor-pointer"
             >
               <img
                 src={`https://api.dicebear.com/7.x/initials/svg?seed=${userEmail}`}
@@ -184,7 +194,6 @@ export default function ReceiptUploadPage() {
           </div>
         </div>
 
-        {/*  Hamburger Menu Links */}
         {menuOpen && (
           <div className="flex flex-col gap-2 mt-3 md:hidden text-sm font-medium">
             <Link
@@ -226,7 +235,7 @@ export default function ReceiptUploadPage() {
           type="file"
           accept="image/*,application/pdf"
           onChange={handleFileChange}
-          className="w-full"
+          className="w-full cursor-pointer"
         />
 
         {previewUrl && (
@@ -305,10 +314,16 @@ export default function ReceiptUploadPage() {
           onChange={handleFormChange}
         />
 
+        {successMessage && (
+          <div className="text-green-600 text-sm">{successMessage}</div>
+        )}
+
         <button
-          disabled={loading}
+          disabled={
+            loading || !file || !formData.merchant_name || !formData.amount
+          }
           onClick={handleUpload}
-          className="px-4 py-2 bg-blue-600 text-white rounded w-full"
+          className="px-4 py-2 bg-black text-white rounded w-full cursor-pointer hover:bg-gray-950 disabled:bg-gray-400"
         >
           {loading ? "Uploading..." : "Upload Receipt"}
         </button>
