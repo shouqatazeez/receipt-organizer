@@ -90,3 +90,26 @@
 git clone https://github.com/shouqatazeez/receipt-organizer.git
 cd receiptpro
 ```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Configure Supabase
+
+Create a `.env` file in the root with your Supabase credentials:
+
+```bash
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-public-key
+```
+
+### 4. Run the App
+
+```bash
+npm run dev
+```
+
+App will run at: [http://localhost:5173](http://localhost:5173)
