@@ -6,12 +6,12 @@ import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedRoute from "@/pages/ProtectedRoute";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import SignupForm from "./pages/SignUp";
-import LoginForm from "./pages/Login";
-import ReceiptGalleryPage from "./pages/ReceiptGalleryPage";
-import ReceiptUploadPage from "./pages/ReceiptUploadPage";
-import Dashboard from "./pages/Dashboard";
-import LandingPage from "./pages/LandingPage";
+import SignupForm from "@/pages/SignUp";
+import LoginForm from "@/pages/Login";
+import ReceiptGalleryPage from "@/pages/ReceiptGalleryPage";
+import ReceiptUploadPage from "@/pages/ReceiptUploadPage";
+import Dashboard from "@/pages/Dashboard";
+import LandingPage from "@/pages/LandingPage";
 
 const router = createBrowserRouter([
   {
