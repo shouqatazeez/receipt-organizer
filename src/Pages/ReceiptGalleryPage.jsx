@@ -427,3 +427,5 @@ export default function ReceiptGalleryPage() {
     </div>
   );
 }
+
+ReceiptGalleryPage.jsx;

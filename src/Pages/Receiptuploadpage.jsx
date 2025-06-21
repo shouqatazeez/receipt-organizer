@@ -230,12 +230,28 @@ export default function ReceiptUploadPage() {
       <div className="p-4 max-w-md mx-auto space-y-4">
         <h1 className="text-2xl font-bold mt-4">Upload Receipt</h1>
 
-        <input
+        <div className="w-full">
+          <label
+            htmlFor="fileInput"
+            className="block w-full text-center bg-white border border-gray-300 px-4 py-2 rounded cursor-pointer hover:bg-gray-100"
+          >
+            {file ? "✔️ Image Selected" : "📷 Choose Image"}
+          </label>
+          <input
+            id="fileInput"
+            type="file"
+            accept="image/*,application/pdf"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+        </div>
+
+        {/* <input
           type="file"
           accept="image/*,application/pdf"
           onChange={handleFileChange}
           className="w-full cursor-pointer"
-        />
+        /> */}
 
         {previewUrl && (
           <div className="mt-4">
