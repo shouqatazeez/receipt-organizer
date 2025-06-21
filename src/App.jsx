@@ -12,7 +12,7 @@ import ProtectedRoute from "@/pages/ProtectedRoute";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Receiptuploadpage from "./Pages/Receiptuploadpage";
 import ReceiptGalleryPage from "./Pages/ReceiptGalleryPage";
-import LoginForm from "./pages/Login";
+import LoginForm from "@/pages/Login";
 
 const router = createBrowserRouter([
   {
