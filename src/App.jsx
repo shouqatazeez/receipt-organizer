@@ -3,16 +3,16 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "@/layouts/AppLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 
-import Signup from "@/pages/Signup";
 import LandingPage from "@/pages/LandingPage";
 import Dashboard from "@/pages/Dashboard";
 
 import ProtectedRoute from "@/pages/ProtectedRoute";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import Receiptuploadpage from "./Pages/Receiptuploadpage";
 import ReceiptGalleryPage from "./Pages/ReceiptGalleryPage";
 import LoginForm from "@/pages/Login";
+import SignupForm from "@/pages/Signup";
+import ReceiptUploadPage from "./Pages/Receiptuploadpage";
 
 const router = createBrowserRouter([
   {
@@ -24,7 +24,7 @@ const router = createBrowserRouter([
         element: <ProtectedRoute />,
         children: [
           { path: "/dashboard", element: <Dashboard /> },
-          { path: "/upload", element: <Receiptuploadpage /> },
+          { path: "/upload", element: <ReceiptUploadPage /> },
           { path: "/gallery", element: <ReceiptGalleryPage /> },
         ],
       },
@@ -33,7 +33,7 @@ const router = createBrowserRouter([
         element: <AuthLayout />,
         children: [
           { path: "/login", element: <LoginForm /> },
-          { path: "/signup", element: <Signup /> },
+          { path: "/signup", element: <SignupForm /> },
         ],
       },
     ],
