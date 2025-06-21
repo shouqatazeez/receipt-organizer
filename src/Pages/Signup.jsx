@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import heroImage from "../assets/signup.jpg";
-import { Mail, Lock } from "lucide-react";
+import { Mail } from "lucide-react";
 
 function SignUp({ className, ...props }) {
   const [email, setEmail] = useState("");
@@ -95,7 +95,6 @@ function SignUp({ className, ...props }) {
               <div className="grid gap-3">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                   <Input
                     id="confirmPassword"
                     type="password"
