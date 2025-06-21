@@ -3,7 +3,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "@/layouts/AppLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 
-import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
 import LandingPage from "@/pages/LandingPage";
 import Dashboard from "@/pages/Dashboard";
@@ -13,6 +12,7 @@ import ProtectedRoute from "@/pages/ProtectedRoute";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Receiptuploadpage from "./Pages/Receiptuploadpage";
 import ReceiptGalleryPage from "./Pages/ReceiptGalleryPage";
+import LoginForm from "./pages/Login";
 
 const router = createBrowserRouter([
   {
@@ -32,7 +32,7 @@ const router = createBrowserRouter([
       {
         element: <AuthLayout />,
         children: [
-          { path: "/login", element: <Login /> },
+          { path: "/login", element: <LoginForm /> },
           { path: "/signup", element: <Signup /> },
         ],
       },
