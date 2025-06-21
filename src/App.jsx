@@ -4,8 +4,8 @@ import AppLayout from "@/layouts/AppLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import SignupForm from "@/pages/SignUp";
-import LoginForm from "@/pages/Login";
+import SignUp from "@/pages/SignUp";
+import Login from "@/pages/Login";
 import ReceiptGalleryPage from "@/pages/ReceiptGalleryPage";
 import ReceiptUploadPage from "@/pages/ReceiptUploadPage";
 import Dashboard from "@/pages/Dashboard";
@@ -30,8 +30,8 @@ const router = createBrowserRouter([
       {
         element: <AuthLayout />,
         children: [
-          { path: "/login", element: <LoginForm /> },
-          { path: "/signup", element: <SignupForm /> },
+          { path: "/login", element: <Login /> },
+          { path: "/signup", element: <SignUp /> },
         ],
       },
     ],

@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import heroImage from "../assets/signup.jpg";
 import { Mail, Lock } from "lucide-react";
 
-function SignupForm({ className, ...props }) {
+function SignUp({ className, ...props }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -139,4 +139,4 @@ function SignupForm({ className, ...props }) {
   );
 }
 
-export default SignupForm;
+export default SignUp;

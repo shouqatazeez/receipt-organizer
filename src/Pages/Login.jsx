@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import heroImage from "../assets/cardimg.avif";
 import { Mail, Lock } from "lucide-react";
 
-function LoginForm({ className, ...props }) {
+function Login({ className, ...props }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -118,4 +118,4 @@ function LoginForm({ className, ...props }) {
   );
 }
 
-export default LoginForm;
+export default Login;
