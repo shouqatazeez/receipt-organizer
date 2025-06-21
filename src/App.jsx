@@ -1,16 +1,13 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
-import AppLayout from "@/layouts/AppLayout";
-import AuthLayout from "@/layouts/AuthLayout";
-
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import SignUp from "@/pages/SignUp";
-import Login from "@/pages/Login";
-import ReceiptGalleryPage from "@/pages/ReceiptGalleryPage";
-import ReceiptUploadPage from "@/pages/ReceiptUploadPage";
-import Dashboard from "@/pages/Dashboard";
-import LandingPage from "@/pages/LandingPage";
-import ProtectedRoute from "@/pages/ProtectedRoute";
+import AppLayout from "./layouts/AppLayout";
+import LandingPage from "./pages/LandingPage";
+import ProtectedRoute from "./pages/ProtectedRoute";
+import Dashboard from "./pages/Dashboard";
+import ReceiptUploadPage from "./pages/ReceiptUploadPage";
+import ReceiptGalleryPage from "./pages/ReceiptGalleryPage";
+import AuthLayout from "./layouts/AuthLayout";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
 
 const router = createBrowserRouter([
   {
