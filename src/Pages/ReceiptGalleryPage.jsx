@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { Menu, X, Search, ReceiptIndianRupeeIcon } from "lucide-react";
@@ -34,33 +34,26 @@ export default function ReceiptGalleryPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchUser();
-    fetchReceipts();
+    fetchUserAndReceipts();
   }, []);
 
-  const fetchUser = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) navigate("/login");
-    setUserEmail(user.email);
+  const fetchUserAndReceipts = async () => {
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data?.user) {
+      navigate("/login");
+      return;
+    }
+
+    setUserEmail(data.user.email);
+    fetchReceipts(data.user.id);
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/login");
-  };
-
-  const fetchReceipts = async () => {
+  const fetchReceipts = async (userId) => {
     setLoading(true);
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) navigate("/login");
     const { data, error } = await supabase
       .from("receipts")
       .select("*")
-      .eq("user_id", user.id);
+      .eq("user_id", userId);
 
     if (error) {
       console.error("Error fetching receipts:", error);
@@ -69,6 +62,11 @@ export default function ReceiptGalleryPage() {
       setReceipts(data.map((r) => ({ ...r, tags: safeParseTags(r.tags) })));
     }
     setLoading(false);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/login");
   };
 
   const handleSave = async () => {
@@ -85,21 +83,49 @@ export default function ReceiptGalleryPage() {
       })
       .eq("id", receipt.id);
 
-    if (error) alert("Failed to update receipt");
-    else {
+    if (error) {
+      alert("Failed to update receipt");
+    } else {
       alert("Receipt updated");
       setShowModal(false);
-      fetchReceipts();
+      fetchUserAndReceipts();
     }
   };
 
   const handleDelete = async (id, fileUrl) => {
     if (!confirm("Are you sure you want to delete this receipt?")) return;
-    const path = fileUrl.split("/storage/v1/object/public/receipts/")[1];
-    await supabase.storage.from("receipts").remove([path]);
-    await supabase.from("receipts").delete().eq("id", id);
-    setShowModal(false);
-    fetchReceipts();
+
+    try {
+      const path = fileUrl.split("/storage/v1/object/public/receipts/")[1];
+
+      const { error: storageError } = await supabase.storage
+        .from("receipts")
+        .remove([path]);
+
+      if (storageError) {
+        console.error("Storage error:", storageError);
+        alert("Failed to delete file from storage.");
+        return;
+      }
+
+      const { error: dbError } = await supabase
+        .from("receipts")
+        .delete()
+        .eq("id", id);
+
+      if (dbError) {
+        console.error("DB error:", dbError);
+        alert("Failed to delete receipt from database.");
+        return;
+      }
+
+      alert("Receipt deleted");
+      setShowModal(false);
+      fetchUserAndReceipts();
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Unexpected error occurred.");
+    }
   };
 
   const filteredReceipts = receipts
@@ -109,7 +135,8 @@ export default function ReceiptGalleryPage() {
         r.merchant_name?.toLowerCase().includes(query) ||
         r.notes?.toLowerCase().includes(query) ||
         r.category?.toLowerCase().includes(query) ||
-        r.tags?.some((t) => t.toLowerCase().includes(query)) ||
+        (Array.isArray(r.tags) &&
+          r.tags.some((t) => t.toLowerCase().includes(query))) ||
         String(r.amount).includes(query);
 
       const date = parseISO(r.date);
@@ -124,20 +151,17 @@ export default function ReceiptGalleryPage() {
       return matchSearch && matchDate && matchAmount;
     })
     .sort((a, b) => {
-      if (filters.sortBy === "date_asc") {
+      if (filters.sortBy === "date_asc")
         return new Date(a.date) - new Date(b.date);
-      } else if (filters.sortBy === "date_desc") {
+      if (filters.sortBy === "date_desc")
         return new Date(b.date) - new Date(a.date);
-      } else if (filters.sortBy === "amount_asc") {
-        return a.amount - b.amount;
-      } else if (filters.sortBy === "amount_desc") {
-        return b.amount - a.amount;
-      } else return 0;
+      if (filters.sortBy === "amount_asc") return a.amount - b.amount;
+      if (filters.sortBy === "amount_desc") return b.amount - a.amount;
+      return 0;
     });
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="sticky top-0 z-40 border-b bg-white shadow-sm px-4 py-3">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-xl font-bold">
@@ -288,7 +312,6 @@ export default function ReceiptGalleryPage() {
           </select>
         </div>
 
-        {/* Gallery */}
         {loading ? (
           <p className="text-center">Loading receipts...</p>
         ) : filteredReceipts.length === 0 ? (
@@ -317,7 +340,7 @@ export default function ReceiptGalleryPage() {
                   <p className="text-xs text-gray-500">{r.date}</p>
                   <p className="text-xs italic text-gray-500">{r.notes}</p>
                   <div className="flex flex-wrap gap-1 mt-1">
-                    {r.tags.map((tag, i) => (
+                    {(r.tags || []).map((tag, i) => (
                       <span
                         key={i}
                         className="bg-gray-200 text-xs rounded-full px-2 py-0.5"
@@ -398,7 +421,11 @@ export default function ReceiptGalleryPage() {
               <input
                 className="w-full border rounded px-3 py-2"
                 placeholder="Tags (comma separated)"
-                value={selectedReceipt.tags?.join(", ") || ""}
+                value={
+                  Array.isArray(selectedReceipt.tags)
+                    ? selectedReceipt.tags.join(", ")
+                    : ""
+                }
                 onChange={(e) =>
                   setSelectedReceipt((p) => ({
                     ...p,
@@ -427,5 +454,3 @@ export default function ReceiptGalleryPage() {
     </div>
   );
 }
-
-ReceiptGalleryPage.jsx;
